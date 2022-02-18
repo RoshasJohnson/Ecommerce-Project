@@ -1,0 +1,241 @@
+{% extends 'customer/header.html' %}
+{% load static %}
+{% block content %}
+
+
+    <!--====== Main App ======-->
+    <div id="app">
+
+        <!--====== Main Header ======-->
+        
+        <!--====== End - Main Header ======-->
+
+
+        <!--====== App Content ======-->
+        <div class="app-content">
+
+            <!--====== Section 1 ======-->
+           
+            <!--====== End - Section 1 ======-->
+
+
+            <!--====== Section 2 ======-->
+            <div class="u-s-p-b-60">
+
+                <!--====== Section Content ======-->
+                <div class="section__content">
+                    <div class="dash">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-12">
+
+                                    <!--====== Dashboard Features ======-->
+                                    <div class="dash__box dash__box--bg-white dash__box--shadow u-s-m-b-30">
+                                        <div class="dash__pad-1">
+
+                                            <span class="dash__text u-s-m-b-16"><P>Hello, {{user}}</span>
+                                            <ul class="dash__f-list">
+                                                <li>
+
+                                                    <a class="dash-active" href="">My Account</a></li>
+                                                <li>
+
+                                                    <a href="{% url 'my_profile' %}">My Profile</a></li>
+                                                    <li>
+
+                                                        <a href="{% url 'my_wishlist' %}">My Wishlist</a></li>
+                                                    
+                                                
+                                            
+                                                    <li>
+
+                                                        <a href="/signin">Logout </a></li>
+                                             
+                                               
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="dash__box dash__box--bg-white dash__box--shadow dash__box--w">
+                                        <div class="dash__pad-1">
+                                            <ul class="dash__w-list">
+                                                <li>
+                                                    <div class="dash__w-wrap ">
+
+                                                        <span style="background-color:greenyellow;" class="dash__w-icon dash__w-icon-style-1"><i class="fas  text-primary"></i></span>
+
+                                                        <span class="dash__w-text">{{order_all}}</span>
+
+                                                        <span style="color: black;" class="dash__w-name">Orders Placed</span></div>
+                                                </li>
+                                                <li>
+                                                    <div class="dash__w-wrap">
+
+                                                        <span style="background-color: red;" class="dash__w-icon dash__w-icon-style-2 "><i class=""></i></span>
+
+                                                        <span class="dash__w-text">{{ cancel_all }}</span>
+
+                                                        <span style="color: black;" class="dash__w-name">Cancel Orders</span></div>
+                                                </li>
+                                                <li>
+                                                    <div class="dash__w-wrap">
+
+                                                        <span  style="background-color: yellow" class="dash__w-icon dash__w-icon-style-3 "><i class="fas fa-cart-arrow-d"></i></span>
+
+                                                        <span class="dash__w-text">{{return_all}}</span>
+
+                                                        <span style="color: black;" class="dash__w-name">Returned</span></div>
+                                                </li>
+                                                <li>
+                                                    <div class="dash__w-wrap">
+
+                                                        <span  style="background-color: rgb(57, 57, 196);" class="dash__w-icon dash__w-icon-style-3 "><i class="fas fa-cart-arrow-d"></i></span>
+
+                                                        <span class="dash__w-text">{{cartcount}}</span>
+
+                                                        <span style="color: black;" class="dash__w-name">My Cart</span></div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!--====== End - Dashboard Features ======-->
+                                </div>
+                                <div class="col-lg-9 col-md-12">
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="dash__box dash__box--shadow dash__box--radius dash__box--bg-white u-s-m-b-30">
+                                            <div class="dash__pad-2 ">
+                                                
+                                                
+                                                <div class="m-order__list">
+                                                    {% if  orders  %}
+
+                                                    {% for i in orders  %}
+                                                    <div class="m-order__get">
+                                                        <div class="manage-o__header u-s-m-b-30">
+                                                            <div class="dash-l-r">
+                                                                <div>
+                                                                    <div style="color: red;" class="manage-o__text-2 "> <span style="color: black;">OrderID :</span>{{i.transcation_id}}</div>
+                                                                    <div style="color: black;" class="manage-o ">Placed on {{i.date_ordered}}</div>
+                                                                </div>
+                                                                {% comment %} <div>
+                                                                    <div class="dash__link dash__link--brand">
+    
+                                                                        <a href="dash-manage-order.html">MANAGE</a></div>
+                                                                </div> {% endcomment %}
+                                                            </div>
+                                                        </div>
+                                                        <div class="manage-o__description">
+                                                            <div class="description__container">
+                                                                <div class="">
+    
+                                                                    <img class="img-rounded w-50" src="{{i.order_product.product_image.url}}" alt=""></div>
+                                                                <div style="color: black;" class="description-title">{{i.order_product}}</div>
+                                                            </div>
+                                                            <div class="description__info-wrap">
+                                                                <div>
+                                                                    {% if i.status == 'Canceled' %}
+                                                                    <span style="background-color: red;" class="manage-o__badge badge--processing  text-light">{{i.status}}</span>
+                                                                    {% elif  i.status == 'Processing'  %}
+                                                                    <span class="manage-o__badge badge--processing bg-primary text-light">{{i.status}}</span><a type="button" href = "{% url 'cancel_order' i.id %}" onclick="call()" class="btn btn-outline-danger text-dark ml-3">Cancel order</a>
+                                                                    
+                                                                    {% elif i.status == 'Packed' %}
+                                                                    <span class="manage-o__badge badge--processing bg-warning text-light">Shipped</span><a type="button" href = "{% url 'cancel_order' i.id %}" class="btn btn-outline-danger text-dark ml-3">Cancel order</a> 
+                                                                   
+                                                                    {% elif i.status == 'Delivered' %}
+                                                                    <span class="manage-o__badge badge--processing bg-success text-light">{{i.status}}</span><a type="button" href = "{% url 'cancel_order' i.id %}" class="btn btn-outline-danger text-dark mt-2 ml-3">Return  order</a>
+                                                                    {% elif i.status == 'Return' %}
+                                                                    <span style="background-color: red;" class="manage-o__badge badge--processing  text-light">{{i.status}} </span>
+
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div>
+                                                                    
+                                                                    
+                                                                    <span style="color: black;" class="manage-o__text-2 u-c">Quantity:
+    
+                                                                        <span class="manage-o__text-2 u-c-secondary">{{i.quantity}}</span></span></div>
+                                                                <div>
+    
+                                                                    <span style="color: black;" class="manage-o__text-2 ">Total:
+                                                                        
+    
+                                                                        <span class="manage-o__text-2  text-success">
+                                                                            ₹ {{i.order_total }}</span></span>
+                                                                        
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    {% if i.status == 'Processing' %}
+                                                    <a  href="{% url 'tracking_order' i.id %}" style = "float:right;" class="btn btn-primary ">Track Order</a>
+                                                    {% elif i.status == 'Packed' %}
+                                                    <a href="{% url 'tracking_order' i.id %}" style = "float:right;" class="btn btn-primary ">Track Order</a>
+                                                    {% elif i.status == 'Delivered' %}
+                                                    <a href="{% url 'tracking_order' i.id %}" style = "float:right;" class="btn btn-primary ">Track Order</a>
+                                                    {% endif %}
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--====== End - Section Content ======-->
+                </div>
+                <!--====== End - Section 2 ======-->
+            </div>
+        </div>
+        {% else %}
+        <span><p>No orders <a href="/" class="btn btn-warning"> GO FOR SHOPPING </a></p></span>
+        {% endif %}
+        <!--====== End - App Content ======-->
+
+
+        <!--====== Main Footer ======-->
+       
+        <!--====== Modal Section ======-->
+
+
+        <!--====== Unsubscribe or Subscribe Newsletter ======-->
+        
+        <script>
+            $(document).ready( function () {
+                $('#example').DataTable();
+            } );
+function call(){
+ 
+            swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then(function () {
+                swal(
+                  'Deleted!',
+                  'Your file has been deleted.',
+                  'success'
+                )
+              })
+            }
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.0/sweetalert2.js" integrity="sha512-3UUOb5j6zHTsx9k8oJ5XHogT2u2miftt8NVKnOICV9Iz6x/WIgJurczwfOVcEZUHWqrBSp0vkc+ZMKfHRd2p2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.0/sweetalert2.js" integrity="sha512-3UUOb5j6zHTsx9k8oJ5XHogT2u2miftt8NVKnOICV9Iz6x/WIgJurczwfOVcEZUHWqrBSp0vkc+ZMKfHRd2p2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.0/sweetalert2.all.min.js" integrity="sha512-oTE6Gwi026OvpTsIUmeIA4+Q3DfI/m0ejEbpd1+qDxngi14bMVH249Z5UJVvKSHeSDmlBtmhtRB+HXySaSCp9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.0/sweetalert2.all.js" integrity="sha512-mEdS3H2V6RWzMLyx/WPZiC2EQnIWjqSBT5m/D8kEdRtUrg0Qi7sBdcAtCg0dCu4G4Nv3g/V/3J4DIu4j/u/nAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.0/sweetalert2.min.js" integrity="sha512-4tabfKsx9Wdz5xwd0sT7jqKrieHkIpLXWXVeG/GT4BohF2l/eIaE54Gxb2gzeSH/kVwz0tLL4qpJwsluJuSymA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+
+        <!--====== Unsubscribe or Subscribe Newsletter ======-->
+        <!--====== End - Modal Section ======-->
+    </div>
+    <!--====== End - Main App ======-->
+
+    
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'adminpart/base.html' %}
+
+{% block content%}
+{% load static %}
+
+
+<div class='table table-striped table-light mt-4 '>
+  <a class="btn btn  float-right" href="/adminpanel/add_product/"  role="submit"><button type="button" class="btn btn-primary btn-lg">Add Product</button></a>
+    <table  id ="example"  class="table table-bordered table-dark" class="table">
+    <thead> 
+      <tr>
+        <th  scope="col" class="border border-dark " style="color:white;">Product Id</th>
+        <th  scope="col" class="border border-dark " style="color:white;">Product Name</th>
+        <th scope="col" class="border border-dark" style="color:white;">Category</th>
+        {% comment %} <th scope="col" class="border border-dark" style="color:white;">description</th> {% endcomment %}
+        <th scope="col" class="border border-dark" style="color:white;">Product_prize</th>
+        <th scope="col" class="border border-dark" style="color:white;">Product stock</th>
+        <th scope="col" class="border border-dark" style="color:white;">Available</th> 
+        <th scope="col" class="border border-dark" style="color:white;">Edit Product </th>
+        <th scope="col" class="border border-dark" style="color:white;"> Delete Product</th>
+
+        
+      </tr>
+    </thead>
+
+    
+     <tbody class="border border-danger">
+    
+    {% for i in products  %}
+      <tr>
+        <td class="border border-dark" style="color:white;">{{i.id }}</td>
+        <td class="border border-dark" style="color:white;">{{i.product_name }}</td>
+        <td class="border border-dark" style="color:white;">{{i.category_type.category_name}}</td>
+        {% comment %} <td class="border border-dark" style="color:white;">{{i.product_description}}</td> {% endcomment %}
+        <td class="border border-dark" style="color:white;">{{i.product_prize}}</td>
+        <td class="border border-dark" style="color:white;">{{i.stock}}</td>
+        <td class="border border-dark" style="color:white;">{{i.is_available  }}</td>
+        <td class="border border-dark" style="color:white;"><a class="btn btn" href="{% url 'update_product' i.id %}" role="sumbit"><button type="button" class="btn btn-outline-warning">Edit</button></a></td>
+            <a  class=" delete" data-confirm="Are you sure to delete this item?"><td class="" style="color:black;"><a class=" delete btn btn" data-confirm="Are you sure to delete this item?" href="{% url 'delete_product' i.id %}" role="sumbit"><button type="button" onclick=alert('Item deleted') class="btn btn-outline-danger">Delete</button></a></a>
+          </div></td>
+      </tr>
+  {% endfor %}
+    
+    </tbody>
+  </table>
+
+
+  </div>
+
+      
+  <script>
+    $(document).ready( function () {
+        $('#example').DataTable();
+    } );
+</script>
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+
+  
+
+  {% endblock %}

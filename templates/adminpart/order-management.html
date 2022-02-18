@@ -1,0 +1,101 @@
+{% extends 'adminpart/base.html' %}
+
+{% load static%}
+{% block content %}
+
+
+
+
+<div class='table table-striped table-light  mt-3 '>
+    
+
+    <table id ="example"  class="table table-bordered table-dark" style="width:100%">
+        <thead>
+          <tr>
+            <th  scope="col" class="border border-dark " style="color:white;">No:</th>
+            <th  scope="col" class="border border-dark " style="color:white;">Customer</th>
+            <th scope="col" class="border border-dark" style="color:white;">Product Name</th>
+            <th scope="col" class="border border-dark" style="color:white;">Category  Name</th>
+            <th scope="col" class="border border-dark" style="color:white;">Quantity</th>
+            <th scope="col" class="border border-dark" style="color:white;">Total prize(INR)</th>
+            <th scope="col" class="border border-dark" style="color:white;">Payment method</th>
+            <th scope="col" class="border border-dark" style="color:white;">Order date</th>
+            <th scope="col" class="border border-dark" style="color:white;">Transaction ID</th>
+            <th scope="col" class="border border-dark" style="color:white;">Order status</th>
+            
+          </tr>
+        </thead>
+        <tbody class="border border-danger" >
+        {% for i in order  %}
+          <tr>
+            <th scope="row" class="border border-dark" style="color:white;">
+                  {{ forloop.counter }}
+         
+            </th>
+            <th scope="row" class="border border-dark" style="color:white;">{{i.user_name}}</th>
+            <td class="border border-dark" style="color:white;">{{i.order_product}}</td>
+            <td class="border border-dark" style="color:white;">{{i.order_product.category_type}}</td>
+            <td class="border border-dark" style="color:white;">{{i.quantity}}</td>
+            <td class="border border-dark" style="color:white;">{{i.total_prize}}</td>
+            <td class="border border-dark" style="color:white;">{{i.payment_method}}</td>
+            <td class="border border-dark" style="color:white;">{{i.date_ordered}}</td>
+            <td class="border border-dark" style="color:white;">{{i.transcation_id  }}</td>
+            {% if  i.status == 'Processing' %}
+            <td class="border border-dark" style="color:black;">  <a type="submit" href = "{% url 'edit_status' i.id %}" class="btn btn-outline-primary">Placed</a>
+              <a type="submit" href = "{% url 'cancel_status' i.id %}" class="btn btn-outline-danger mt-1 btn-lg">Cancel</a></td>
+          
+          
+            {% elif i.status == 'Canceled'  %}
+            <td class="border border-dark" style="color:black;">  <button type="submit" class="btn btn-danger">{{i.status}}</button></td>
+            {% elif  i.status == 'Packed' %}
+            <td class="border border-dark" style="color:black;">  <a type="submit" href = "{% url 'edit_status' i.id %}" class="btn btn-outline-warning">Shipped</a>
+              <a type="submit" href = "{% url 'cancel_status' i.id %}" class="btn btn-outline-danger mt-1 btn-lg">Cancel </a></td></td>
+            {% elif  i.status == 'Delivered' %}
+            <td class="border border-dark" style="color:black;">  <button type="submit" class="btn btn-success">{{i.status}}</button></td>
+            {% elif  i.status == 'Return' %}
+            <td class="border border-dark" style="color:black;">  <button type="submit" class="btn btn-danger">{{i.status}}</button></td>
+            {% endif %}
+            {% comment %} <td class="border border-danger" style="color:black;"><a class="btn btn" href="{% url 'userstatus' i.id %}" role="sumbit"> {% endcomment %}
+            </a>
+          
+          </tr>
+          
+          {% endfor %}
+        </tbody>
+        
+      </table>
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+      
+    
+    <script>
+      $(document).ready( function () {
+          $('#example').DataTable();
+      } );
+  </script>
+  <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+    <br>
+    <div class= ' mb-5'>
+  
+   
+
+
+{% endblock %}
