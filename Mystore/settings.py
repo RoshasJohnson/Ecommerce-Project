@@ -93,8 +93,8 @@ WSGI_APPLICATION = 'Mystore.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ecom',
-        'HOST': 'localhost',
+        'NAME':'ecom',
+        'HOST':'localhost',
         'PORT':'5432' ,
         'USER':'root',
         'PASSWORD': 'roshasjohnson!@#$%^&*()_+',
