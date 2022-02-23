@@ -11,7 +11,7 @@ import uuid
 
 
 class Usercreation(AbstractUser):
-    phone_number = models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=50,unique = True)
     coupen       = models.CharField(max_length=50 ,null=True)  
     
 # --------------------------------   
@@ -205,6 +205,7 @@ class OrderItem(models.Model):
     product     = models.ForeignKey(Product,on_delete= models.SET_NULL, null= True ,blank = True)
     quantity    = models.IntegerField(default=1,null = True ,blank= True)
     date_added  = models.DateField(auto_now_add=True)
+    guest_user  = models.CharField(max_length=200,null=True)
     
     @property
     def get_total(self): 

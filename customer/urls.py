@@ -49,6 +49,7 @@ urlpatterns = [
     path('enter_otp_number',views.sending_otp_view,name = "enter_otp_number"),
     path('otp_login_verification',views.otp_login_verification,name = "otp_login_verification"),
     path('timer',views.timercheck,name = "timer")
+    
 
  
     ] 

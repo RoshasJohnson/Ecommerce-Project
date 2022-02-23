@@ -10,7 +10,7 @@ admin.site.register(Product)
 admin.site.register(Category)
 admin.site.register(Coupen)
 admin.site.register(Design)
-
 admin.site.register(MyWishList)
 admin.site.register(Order)
 admin.site.register(OrderItem)
+ 

@@ -125,7 +125,7 @@ def product_view(request):
         return redirect('/adminpanel/login/')    
 
 # =========================================================================================================================================  
-# Fetching category and displaying   
+  
 
 def category_view(request):
     if request.session.get('name'):
@@ -276,7 +276,7 @@ def edit_status_View(request,id):
             edit_status.status  = "Delivered"
             date = datetime.now()
             print(date,'//////////////////////////////////')
-            Order.objects.update(user_name = username ,date_delivered = date)
+            edit_status.date_delivered = date
         edit_status.save()         
         return redirect ('/adminpanel/order_management')
 # =========================================================================================================================================         

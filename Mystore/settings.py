@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 
+from email.policy import default
 from pathlib import Path,os 
-from decouple import config 
+from decouple import config
+from django import conf 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY') 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG')
+DEBUG = config('DEBUG',cast = bool,default = True)
 
 ALLOWED_HOSTS = []
 
@@ -91,11 +93,11 @@ WSGI_APPLICATION = 'Mystore.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ecom',
-        'HOST': 'localhost',
-        'PORT':'3306' ,
-        'USER': 'root',
-        'PASSWORD': 'roshasjohnson!@#$%^&*()_+',
+        'NAME': config('DATABASE_NAME'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT':config('DATABASE_PORT') ,
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
           }
 }
 

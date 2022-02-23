@@ -96,7 +96,7 @@
                                       <a style="background-color: red;" type="button"  onclick="coupen()" class="btn text-light btn-sm w-25 ">
                                         Have a Coupen ? 
                                     </a>
-                                     <p style="color: red;">  {% include "adminpart/alert.html" %}</p>
+                                     <p style="color: red;">  {% include "adminpart/alert.html" %}</p>{% if coupen_offer %} <p style="color: green;"> You got {{coupen_offer}}% discount </p> {% endif %}
                                       <div style="display: none;" id="coupenDiv">
 
                                         {% for i in  Items %}
@@ -427,6 +427,7 @@
                         let num =total.getAttribute('data-prize');
                         let get_total = parseInt(num)
                         alert(get_total)
+                  
                       
 
                      
