@@ -32,7 +32,18 @@ $(document).ready(function() {
 }); 
 // jquery end
 </script>
+<style>
+    body{
+  background-color:#2D3047;
+}
 
+div{
+  background-color:#419D78;
+  color:#EFD0CA;
+  font-size:20px;
+  text-align:center;
+}
+</style>
 </head>
 
 {% block content %}
@@ -45,9 +56,10 @@ $(document).ready(function() {
             <div class="card-body">
             <h4 class="card-title mb-4">OTP VERIFICTION</h4>
             <p> we send a otp verifiction to your registered mobile number</p>
-            <form method='post' action= '/otp'>
+    <form method='post' action= " {% url 'otp_verification' %}">
+            {% csrf_token %}
                     <div class="form-group">
-                        <input type="number" class="form-control" placeholder="Enter otp" >
+                        <input type="number" name = "number" class="form-control" placeholder="Enter otp" >
                     </div> <!-- form-group// -->
                    
                     
@@ -56,17 +68,56 @@ $(document).ready(function() {
                         <button style="border: red;background-color: red;" type="submit" class="btn btn-primary btn-block"> submit  </button>
                     </div> <!-- form-group// -->    
             </form>
-            </div> <!-- card-body.// -->
+            </div> 
+            <div style="margin-left: 60%;" class="text-danger">Time Left = <span id="timer"></span></div>
             </div> <!-- card .// -->
-    
-         <p class="text-center mt-4">Don't get otp ? <a href="#">resend</a></p>
+ 
+         <p class="text-center mt-4">Don't get otp ? <button  onclick="resend()" class="btn text-primary ">resend</button></p>
          <br><br>
     <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
     
     
     </section>
     <!-- ========================= SECTION CONTENT END// ========================= -->
-    
+    <script>
+document.getElementById('timer').innerHTML =
+  01 + ":" + 00;
+startTimer();
+
+
+function startTimer() {
+  var presentTime = document.getElementById('timer').innerHTML;
+  var timeArray = presentTime.split(/[:]+/);
+  var m = timeArray[0];
+  var s = checkSecond((timeArray[1] - 1));
+  if(s==59){m=m-1}
+  if(m<0){
+    return
+  }
+  
+  document.getElementById('timer').innerHTML =
+    m + ":" + s;
+  console.log(m)
+  setTimeout(startTimer, 1000);
+  
+}
+
+function checkSecond(sec) {
+  if (sec < 10 && sec >= 0) {sec = "0" + sec}; // add zero in front of numbers < 10
+  if (sec < 0) {sec = "59"};
+  return sec;
+
+
+}
+setTimeout(function () {
+       window.location.href = "/login_with_otp"; //will redirect to your blog page (an ex: blog.html)
+    }, 60000); //will call the function after 2 secs.
+
+function resend(){
+ 
+    window.location = '/login_with_otp'
+}
+    </script>
     
     <!-- ========================= FOOTER ========================= -->
     <footer class="section-footer border-top padding-y">

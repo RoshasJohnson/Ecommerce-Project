@@ -254,7 +254,14 @@
             <!--====== End - Section Content ======-->
         </form>
         <div id="razorpaydiv"  style="display:none;" class="answer_list" >
-            <form action="razorpay" onsubmit="send_data_to_backend()" method="POST">
+            <form  action = "{% url 'razorpay_cart_checkout' %}">
+             {% csrf_token %} 
+
+                <input value="razorpay" type="hidden" name="payment" id="payment">
+                {% for i in form %}
+                <input value="{{i.id}}" type="hidden" name="address" id="address">
+                {% endfor %}
+                <input value="{{grandtotal}}" type="hidden" name="grandtotal" id="address">
               <script
               
                   src="https://checkout.razorpay.com/v1/checkout.js"
@@ -355,22 +362,6 @@
                             }).render('#paypal-button-container');
                           }
                           initPayPalButton();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -530,7 +521,8 @@
                                   })
                                   .then((data)=>{
                                     console.log('data:',data)
-                                    
+                                    alert(data.limit)
+
                                     Swal.fire({
                                         title: 'Order placed successfully ',
                                         showClass: {

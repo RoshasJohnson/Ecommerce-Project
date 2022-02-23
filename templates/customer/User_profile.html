@@ -57,6 +57,7 @@
                             <br>{{i.city}} {{i.state}}<br> postal-code:{{i.post_code}}
                         </p>
                         <a class="btn  btn-outline-danger btn-sm" href="{% url 'delete_address' i.id %}">Delete Addres</a>
+                         <a class="btn  btn-outline-warning btn-sm ml-2 text-dark"  href="{% url 'edit_address' i.id %}">Edit Address</a>
                     </div>
                 </div>
             </div>

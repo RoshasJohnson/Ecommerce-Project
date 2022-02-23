@@ -1,3 +1,10 @@
+from ast import Return
+from audioop import add
+from ctypes import addressof
+from genericpath import exists
+from itertools import product
+from multiprocessing import context
+from defer import return_value
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 import re
@@ -10,23 +17,82 @@ from django.contrib.auth import authenticate
 from django import template, views
 from django.views.decorators.cache import never_cache
 from datetime import date, datetime, timedelta
-from email import message
+from email import contentmanager, message
 from django.contrib import messages
 from urllib import request
 from urllib.request import Request
 from django import template, views
 import json 
-
-
-
+from twilio.rest import Client
+import os
 
 
 
 
 # ========================================================================================================================================= 
+
+
+number = ''
+
+def SendOTP(num):
+    global number 
+    number = num
+ 
+    
+
+    account_sid = os.environ['TWILIO_ACCOUNT_SID'] = "ACa11ce4030d6a812c65565ceafd7bc620"
+
+    auth_token = os.environ['TWILIO_AUTH_TOKEN'] = "1a6d3976393fa2430802b3428fe9516f"
+ 
+    client = Client(account_sid, auth_token)
+
+    verification = client.verify \
+                            .services('VA5d574787f931581054fc3afe1c571050') \
+                            .verifications \
+                            .create(to=number, channel='sms')
+                  
+    print(verification.status)
+    return True
+
+
+def check(otp,number):
+    print(otp,number)
+    account_sid = os.environ['TWILIO_ACCOUNT_SID'] = "ACa11ce4030d6a812c65565ceafd7bc620"
+    auth_token = os.environ['TWILIO_AUTH_TOKEN'] = "1a6d3976393fa2430802b3428fe9516f"
+    client = Client(account_sid, auth_token)
+
+    verification_check = client.verify \
+                            .services('VA5d574787f931581054fc3afe1c571050') \
+                            .verification_checks \
+                            .create(to=number, code=otp)
+    print(verification_check.status)
+    print(verification_check)
+
+    if verification_check.status ==  'approved':
+        return True
+    else:
+        return False
 # ========================================================================================================================================= 
 
 # This function for registring the user 
+
+def otp_verication(request):
+    if request.session.get('name'):
+        user = request.session.get('name')
+        user = Usercreation.objects.filter(username = user)
+        for i in user: 
+            num = i.phone_number
+        number       = '+91'+num    
+        print(number)
+        if request.method  == 'POST':
+            otp = request.POST ['number']
+            if check(otp,number):
+                return redirect('/signin')
+            else:
+                messages.error(request,'Invalid OTP ') 
+    else:
+        return redirect('/usersignup/')    
+
 
 @never_cache
 def usersignupView (request):
@@ -35,11 +101,10 @@ def usersignupView (request):
         if form.is_valid():                 
                 request.session['name'] = request.POST['username']
                 num          = request.POST['phone_number']
-                print(num)
                 number       = '+91'+num
-                print(number)
-               
-                form.save()   
+
+                if SendOTP(number) :
+                    form.save()   
 
                 return render(request,'customer/otp.html')                  
     else:
@@ -52,36 +117,36 @@ def usersignupView (request):
 # =========================================================================================================================================     
 # home page view function
 def homepage_view(request):
-    Designpage= Design.objects.all()    
-    print(len(Designpage))     
-    if request.session.get('name'):
-        user         = request.session.get('name')
-        customer     = request.session.get('name')
-        user         = Usercreation.objects.get(username = customer)
-        everyproduct = Product.objects.all()
-        choices      = Category.objects.all() 
-        cartcount    =  OrderItem.objects.filter(user = user  ).count()
-        cartitems    = OrderItem.objects.filter(user = user).all
-      
-        contex = {'everyproduct':everyproduct,
-        'Designpage':Designpage,
-        'choices':choices,
-        'cartcount':cartcount,'cartitems':cartitems,'user':user}
-       
-        return render(request,'customer/index.html',contex)
+    Designpage= Design.objects.all()
+    for i in Designpage:
+        print(i.Banner_image1.url)
+    try:    
+        if request.session.get('name'):
+            user         = request.session.get('name')
+            user         = Usercreation.objects.get(username = user)
+            everyproduct = Product.objects.all()
+            choices      = Category.objects.all() 
+            cartcount    =  OrderItem.objects.filter(user = user).count()
+            cartitems    = OrderItem.objects.filter(user = user).all 
+            contex = {'everyproduct':everyproduct, 
+            'Designpage':Designpage,
+            'choices':choices,
+            'cartcount':cartcount,'cartitems':cartitems,'user':user}
+            return render(request,'customer/index.html',contex)
 
-    else:
-        user = request.session.get('name') 
-        Designpage   = Design.objects.all()
-        everyproduct = Product.objects.all()
-        choices      = Category.objects.all()
-        order        =  OrderItem.objects.all().count()
-        contex       = {'everyproduct':everyproduct,
-        'Designpage':Designpage,
-        'choices':choices,
-        'order':order,'user':user}
-        return render(request,'customer/index.html',contex)
-
+        else:
+        
+            Designpage   = Design.objects.all()
+            everyproduct = Product.objects.all()
+            choices      = Category.objects.all()
+            order        =  OrderItem.objects.all().count()
+            contex       = {'everyproduct':everyproduct,
+            'Designpage':Designpage,
+            'choices':choices,
+            'order':order}
+            return render(request,'customer/index.html',contex)
+    except:
+        return redirect('/signin')
 
 # ========================================================================================================================================= 
 # select Prdoucted view function
@@ -89,37 +154,23 @@ def homepage_view(request):
   
 def selected_Product_view(request,id):
     if request.session.get('name'):
-        product_offer = 0
-        category_offer = 0
+        product_offer   = 0
+        category_offer  = 0
         selectedProduct = Product.objects.filter(id= id) 
         choices         = Category.objects.all()
         customer        = request.session.get('name')
         user            = Usercreation.objects.get(username = customer)
         cartcount       =  OrderItem.objects.filter(user = user  ).count()
         wishlist        = [i.product for i in MyWishList.objects.filter(username = user)]
-        # try:
-        #     for i in selectedProduct:
-        #         product_name = i.id
-        #         category = i.category_type
-        #     category = categoryOffer.objects.get(category = category )
-        #     product  = ProductOffer.objects.get( product = product_name)
-        #     print(category,product)
-        #     for i in product:
-        #         product_offer = i.product_offer
-        #     for i in category:
-        #         category_offer = i.category_offer
-           
-        # except:
-        #     pass 
-        print(category_offer,product_offer,'tttttttttttttttttttttttttttttttttttttttttttt')
-        contex          = {'selectedProduct':selectedProduct,'choices':choices,'cartcount':cartcount,'wishlist':wishlist,
-        'product_offer':product_offer,'category_offer':category_offer }
+
+        contex          = {'selectedProduct':selectedProduct
+        ,'choices':choices,'cartcount':cartcount,'wishlist':wishlist,
+        'product_offer':product_offer,
+        'category_offer':category_offer }
         return render(request,'customer/selected_product.html',contex)
     else:
         selectedProduct = Product.objects.filter(id= id) 
         choices = Category.objects.all()
-   
-        
         contex   = {'selectedProduct':selectedProduct,'choices':choices,'product_offer':product_offer,'category_offer':category_offer}
         return render(request,'customer/selected_product.html',contex)
 
@@ -182,8 +233,7 @@ def cart_View(request):
         qty        =  0
         for i in items:
             sum += i.quantity  * i.product.get_coupen_offer_prize 
-            qty  = i.quantity
-        print(qty,'jjjjjjjjjjjjjjjjjjjjjjjjjjjjj')        
+            qty  = i.quantity     
       
     else:   
         items = [] 
@@ -209,30 +259,24 @@ def checkout_view(request):
     try:
         if request.method == 'GET':
             coupen    = request.GET['coupen']
-            print(coupen)
             if  Coupen.objects.filter(Coupencode = coupen).exists():
                 if Usercreation.objects.filter(username = user,coupen = coupen).exists():
                     messages.error(request,'This coupen you have been already used')
-                    print('Existing')
                 else:
                     print('Not existing')
                     tax              = 18   
                     coupen_code      = Coupen.objects.get(Coupencode = coupen)
                     coupen_offer     = coupen_code.Coupen_offer  
-                    print(coupen_code,coupen_offer)
                     user             = request.session.get('name')   
-                    print(user,)
+                   
                     print('first step finished')
                     for i in Items:
                         sum += i.quantity  * i.product.get_coupen_offer_prize
                     tax = int(sum/18)
                     grandtotal       = tax+sum+40
-                    print(grandtotal,'this is grand total first')
                     grandtotal       = grandtotal - (grandtotal*coupen_offer)/100
-                    print(grandtotal,'this is grand total')
-                    print('second step finished')
                     Usercreation.objects.filter(username = username ).update(coupen = coupen)
-                    print('success')
+                    
                     
                       
             else:
@@ -275,7 +319,7 @@ def updateItem(request):
         customer    = request.session.get('name')
         user        = Usercreation.objects.get(username = customer)
         product     = Product.objects.get(id = productId  ) 
-        OrderItem.objects.create(product = product ,user = user )
+        OrderItem.objects.create(product = product ,user = user )  
         return JsonResponse('item was added', safe = False)    
 
 
@@ -381,10 +425,10 @@ def OrderView(request,id):
         for i in Items:
                 tax         = int(( i.get_coupen_offer_prize)/18)
                 grandtotal  = tax+i.get_coupen_offer_prize +40  
-            
+        grandtotalmul = grandtotal*100    
         context = {'Items':Items,'form':form,'tax':tax,
         'grandtotal':grandtotal,'choices':choices,'cartcount':cartcount,
-        'coupen_offer':coupen_offer,'discount_prize':discount_prize,
+        'coupen_offer':coupen_offer,'discount_prize':discount_prize,'grandtotalmul':grandtotalmul
      } 
         return render(request,'customer/checkout-2.html',context) 
     else:
@@ -399,7 +443,8 @@ def addcartQtyView(request):
         action    = data['action']
         productid = data['productId']
         orderItem = OrderItem.objects.get(id  = productid)
-        print(action,'actionnnnnnn')
+        print(productid,'dddddddddddddddddddddddddddddddddddddddddddddddddddddd')
+     
         if action == 'add':
             orderItem.quantity =(orderItem.quantity  + 1)
         elif action  == 'minus':
@@ -408,8 +453,8 @@ def addcartQtyView(request):
         if productid in data:    
             orderItem = OrderItem.objects.get(id = productid)
         orderItem.save()
-        if orderItem.quantity <= 0:
-           orderItem.delete()
+        
+            
         return JsonResponse('success', safe = False) 
    
 
@@ -517,6 +562,7 @@ def cart_item_buy_View(request):
          username       = Usercreation.objects.get(username= user)
          product        = OrderItem.objects.filter(user = username)
          address        = CustomerAdress.objects.get(id = address_id)
+         limit = 0
          tax = 0
          for i in product:
              tax       =  i.product.product_prize/18   
@@ -526,9 +572,9 @@ def cart_item_buy_View(request):
              Order( Customer = address, order_product  =i.product,
              user_name = username,payment_method = payment_method,
              quantity  = i.quantity ,total_prize =get_total).save()
-
+             limit +=0
              product.delete()
-         return JsonResponse('cash-on-delevery for cart items' ,safe=False)
+         return JsonResponse({'cash-on-delevery for cart items':8, 'limi': limit} ,safe=False)
 
 
 
@@ -814,15 +860,153 @@ def remove_cart_item_View(request,id):
         remove_cart_item.delete()
         return redirect('/cart')
     else: 
-        return redirect('/')   
+        return redirect('/')  
 
-# ========================================================================================================================================= 
+#========================================================================================================================================= 
 def invoice_view(request,id):     
     if request.session.get('name'):
         product = Product.objects.get(id = id)
-        order   = Order.objects.filter( order_product = id).order_by('-id')
-    
- 
+        order= Order.objects.filter(order_product = product ).order_by('-id')[0]
  
         context = {'order':order}
         return render(request,'customer/invoice.html',context)
+#=========================================================================================================================================
+
+
+
+def invoice_Cart_view(request):     
+    if request.session.get('name'):
+        order   = Order.objects.all()
+        context = {'order':order}
+        return render(request,'customer/invoice.html',context)
+
+
+#=========================================================================================================================================
+
+
+def razorpay_checkout(request):
+    if request.session.get("name"):
+        if request.method == 'GET':
+            user        = request.session.get('name')
+            payment     = request.GET['payment']
+            product_id  = request.GET['product']
+            username    = Usercreation.objects.get(username = user)
+            product     = Product.objects.get(id = product_id)
+            get_total   =  request.GET['grandtotal']
+            address     =  request.GET['address']
+            address     = CustomerAdress.objects.get(id = address)
+            print(user,payment,product_id ,username,address,get_total,'b;ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+            Order.objects.create( Customer = address,order_product =product,
+         user_name = username,payment_method = payment ,total_prize =get_total)
+            print('successsssssssssssssssssssssssssssssssssssssssss')
+            order= Order.objects.all().order_by('-id')
+            context = {'order':order}
+        return render(request,'customer/invoice.html',context)
+            
+
+
+#=========================================================================================================================================
+
+            
+
+def razorpay_cart_checkout(request):
+    if request.session.get("name"):
+        if request.method == 'GET':
+            user        = request.session.get('name')
+            payment     = request.GET['payment']
+            username       = Usercreation.objects.get(username= user)
+            product        = OrderItem.objects.filter(user = username)
+            get_total   =  request.GET['grandtotal']
+            address     =  request.GET['address']
+            address     = CustomerAdress.objects.get(id = address)
+            for i in product:
+                tax       =  i.product.product_prize/18   
+                get_total =    (i.product.product_prize+tax +40) *i.quantity 
+                quantity  = i.quantity 
+                print(get_total,"quantity")
+                Order( Customer = address, order_product  =i.product,
+                user_name = username,payment_method = payment,
+                quantity  = i.quantity ,total_prize =get_total).save()
+                product.delete()
+            print('succuss')
+            order= Order.objects.all().order_by('-id')
+            context = {'order':order}
+            return render(request,'customer/invoice.html',context)
+                  
+#=========================================================================================================================================
+def edit_address_view(request,id):
+    if request.session.get('name'):
+        user    = request.session.get('name')
+        if request.method == 'POST':
+            pass
+        else:
+            username        = Usercreation.objects.get(username = user)
+            address         = CustomerAdress.objects.get(id  = id)
+            form            = CustomerAdressForm(instance  =  address)
+            context          =   {'form':form}    
+            return render (request,'customer/Editaddress.html',context)
+    else:
+
+        return redirect("signin")        
+def edti_address_save_View(request):
+    if request.session.get('name'):
+        user    = request.session.get('name')
+        if request.method == 'POST':
+            user = request.session.get('name')
+            user = Usercreation.objects.get(username = user)
+
+            user = CustomerAdress.objects.get(user = user)
+            editedform =  CustomerAdressForm(request.POST,instance  = user )
+            if editedform.is_valid():
+                editedform.save()
+            return redirect('/my_profile')
+
+            
+    else:
+        return redirect("signin")          
+
+def login_with_otp(request):
+    return render (request,'customer/login_with_otp_mob.html')
+
+
+def sending_otp_view(request):
+        if request.method == "POST":
+            try:
+                number = request.POST['number']
+                number = int(number)
+                num = Usercreation.objects.filter(phone_number = number).count()
+                if num >= 1:
+                    number = str(number)
+                    num = '+91'+number
+                    if SendOTP(num):
+                        return  render(request,'customer/login_otp.html',{'number':number})
+                       
+                else:
+                    messages.error(request,"we could'nt find your number from our server")
+                    return render (request,'customer/login_with_otp_mob.html')        
+            except:
+                pass            
+                
+               
+def otp_login_verification(request):
+    try:
+        if request.method == "POST":
+            otp = request.POST['otp']
+            num = request.POST['number']
+            num =  num
+            print('was it ')
+            print(num,'////////////////////////////')
+            if check(otp,num):
+                request.session['name'] = num
+                return redirect('/manage_account')
+            else:
+                messages.error(request,'Invalid OTP')
+                return  render(request,'customer/login_otp.html',{'number':number})
+        else:
+            return redirect('/signin')  
+    except:
+           messages.error(request,'Invalid OTP')
+           return  render(request,'customer/login_otp.html',{'number':number})
+
+def timercheck(request):
+    return render (request,'customer/otp.html')        

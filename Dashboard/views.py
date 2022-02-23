@@ -17,13 +17,8 @@ from django.contrib import messages
 from Dashboard.forms import Update_form
 from urllib import request, response
 import csv
+import xlwt
 # Create your views here.
-
-
-
-
-
-
 
 
 
@@ -102,9 +97,7 @@ def admin_dashboard(request):
 # Fetching user data and displaying, Here using page initions 
 def user_view(request):
     if request.session.get('name'):
-        page_inition = Paginator(Usercreation.objects.all(),6) 
-        page = request.GET.get('page')
-        listing = page_inition.get_page(page)
+        listing = Usercreation.objects.all() 
         return render (request,'adminpart/user-management.html',
         {'listing':listing})
 
@@ -436,7 +429,27 @@ def date_wise_report_view(request):
                
 #=========================================================================================================================================          
 
-
+def export_as_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment;filename=SalesReport' +\
+        str(datetime.now())+'.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('SalesReport')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = [['user_name','order_product', 'quantity','order_product', 'date_ordered', 'total_prize']]
+    for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    font_style = xlwt.XFStyle()
+    rows = Order.objects.all().values_list(
+      'user_name','order_product', 'quantity','order_product', 'date_ordered', 'total_prize')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+                ws.write(row_num, col_num, str(row[col_num]), font_style)
+    wb.save(response)
+    return response
 
 
 def adminlogout_view(request):

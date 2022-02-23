@@ -11,7 +11,7 @@
     <form nonvalidate name="form" method = "get" action=" {% url 'date-wise-report' %}">
       <h3>Sort with date wise</h3>
       <label for="birthday">Date wise:</label>
-      <input type="date" id="date" name="date">
+      <input type="date"  max="" id="date" name="date">
       <button  id=""  class="btn btn-primary btn-lg "> Find</button>
 
      
@@ -109,6 +109,7 @@
     $(document).ready(function() {
       $('#date').datepicker();
       $('#date').datepicker('setDate', 'today');
+      date.max = new Date().toISOString().split("T")[0];
   });
   
   </script>
@@ -143,10 +144,20 @@
                 ddlYears.appendChild(option);
             }
         };
+
+
+
+        n =  new Date();
+y = n.getFullYear();
+m = n.getMonth() + 1;
+d = n.getDate();
+document.getElementById("date").innerHTML = m + "/" + d + "/" + y;
     </script>
 
 
 
+<script>
 
+  </script>
 
 {% endblock %}

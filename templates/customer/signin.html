@@ -71,17 +71,18 @@ $(document).ready(function() {
 				</div> <!-- form-group// -->
 				
 				
-				<div class="form-group">
+				{% comment %} <div class="form-group">
 					<a href="#" class="float-right">Forgot password?</a> 
-				</div> <!-- form-group form-check .// -->
+				</div> <!-- form-group form-check .// --> {% endcomment %}
 				<div class="form-group">
 					<button style="border: red;background-color: red;" type="submit" class="btn btn-primary btn-block"> Login  </button>
+					<div class="col-md-12"> <a class="btn btn-sm btn-primary btn-block text-uppercase float-right mt-3" href=" {% url 'login_with_otp' %}"><img src="">Log in with otp </a> </div>
 				</div> <!-- form-group// -->    
 		</form>
 		</div> <!-- card-body.// -->
 		</div> <!-- card .// -->
-		<div class="row">
-			<div class="col-md-12"> <a class="btn btn-lg btn-google btn-block text-uppercase btn-outline" href="http://127.0.0.1:8000/accounts/google/login/"><img src="https://img.icons8.com/color/16/000000/google-logo.png"> Sign in Using Google</a> </div>
+		<div  class="col-lg-4  offset-md-2">
+
 		</div> <br>
      <p class="text-center mt-4">Don't have account? <a href="/registeruser/">Sign up</a></p>
      <br><br>

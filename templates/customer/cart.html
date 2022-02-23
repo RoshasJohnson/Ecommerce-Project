@@ -26,16 +26,15 @@
                                 <td>
                                   <div class="product_count">
 
-                                    <button type="button" onclick="change()"  data-product = "{{item.id}}"  data-action="add" class="btn btn-light ti-angle-up" id="action" ></button>
+                                    <button type="button" onclick="change({{item.id}})"  data-product = "{{item.id}}"  data-action="add" class="btn btn-light ti-angle-up" id="action" ></button>
                                     <button class = "btn btn-primary" >{{item.quantity}}</button>
                                   
-                                {% if qty > 1 %}
-                                <button type="button"  onclick="changeRemove()" data-product = "{{item.id}}" data-action="minus" class="btn btn-light ti-angle-down" id="actiominus"></button>                                       
-                                   
-                                {% else %}
-                                <button  class="btn btn-light ti-angle-down "></button> 
-                                {% endif %}
-                                
+                              {% if item.quantity  <= 1 %}
+                                                                   
+                     <button type="button"   class="btn btn-light ti-angle-down" ></button>   
+                              {% else %}
+                              <button type="button"  onclick="changeRemove({{item.id}})" data-product = "{{item.id}}" data-action="minus" class="btn btn-light ti-angle-down" id="actiominus"></button>   
+                           {% endif %}
                                     
                                   </div>
                                 </td>
@@ -135,21 +134,25 @@
         ga('create', 'UA-XXXXX-Y', 'auto');
         ga('send', 'pageview')
 
-function changeRemove(){
+function changeRemove(id){
   product  = document.getElementById('actiominus')
   var productId = product.getAttribute('data-product');
   var action = product.getAttribute('data-action');
-  updateuserOrder(productId,action)
+ 
+  updateuserOrder(id,action)
 
 }
 
-function change(){ 
+function change(id){ 
   product  = document.getElementById('action')
   var productId = product.getAttribute('data-product');
   var action = product.getAttribute('data-action');
-  updateuserOrder(productId,action)
+
+  updateuserOrder(id,action)
+
 
 }
+
 
 
 

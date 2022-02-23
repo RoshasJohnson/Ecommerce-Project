@@ -1,4 +1,5 @@
 
+from unicodedata import name
 from django.urls import path,include
 from . import views
 
@@ -37,5 +38,17 @@ urlpatterns = [
     path('add_to_wishlist/',views.add_to_wishlist_view,name = "add_to_wishlist"),
     path('remove_wish_list/<int:id>/',views.delete_wish_list_view,name = "remove_wish_list"),
     path('remove_cart_item/<int:id>/',views.remove_cart_item_View,name ="remove_cart_item"),
-    path('order_placed/<int:id>/',views.invoice_view ,name = "order_placed")
+    path('order_placed/<int:id>/',views.invoice_view ,name = "order_placed"),
+    path('otp_verification',views.otp_verication,name = "otp_verification"),
+    path('order_place/',views.invoice_Cart_view ,name = "order_place"),
+    path('razorpay_checkout',views.razorpay_checkout,name = "razorpay_checkout"),
+    path('razorpay_cart_checkut',views.razorpay_cart_checkout,name = "razorpay_cart_checkout"),
+    path('edit_address/<int:id>/',views.edit_address_view,name = "edit_address"),
+    path('edit_address_save',views.edti_address_save_View,name = "edit_address_save"),
+    path('login_with_otp',views.login_with_otp,name = "login_with_otp"),
+    path('enter_otp_number',views.sending_otp_view,name = "enter_otp_number"),
+    path('otp_login_verification',views.otp_login_verification,name = "otp_login_verification"),
+    path('timer',views.timercheck,name = "timer")
+
+ 
     ] 

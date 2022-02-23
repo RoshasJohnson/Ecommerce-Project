@@ -30,6 +30,7 @@ urlpatterns = [
     path('cancel_status/<int:id>',views.cancel_status_view,name = "cancel_status"),
     path('sales_report/',views.sales_report_view,name = "sales_report"),
     path('offer_management',views.offer_management_view ,name = "offer_management"), 
-    path('date-wise-report' ,views.date_wise_report_view,name ="date-wise-report") 
+    path('date-wise-report' ,views.date_wise_report_view,name ="date-wise-report") ,
+    path('export_as_excel',views.export_as_excel, name = 'export_as_excel' )
 
 ]

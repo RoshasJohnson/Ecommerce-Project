@@ -1,7 +1,5 @@
 from dataclasses import fields
 
-
-
 from .models import AbstractUser, CustomerAdress, Design, Order
 from .models import Usercreation
 from django import forms
