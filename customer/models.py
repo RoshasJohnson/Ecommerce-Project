@@ -17,8 +17,8 @@ class Usercreation(AbstractUser):
 # --------------------------------   
 class Coupen(models.Model):
     
-    Coupencode   = models.IntegerField(max_length=200, null = True,blank = True)
-    Coupen_offer = models.IntegerField(max_length=200,null = True)
+    Coupencode   = models.IntegerField( null = True,blank = True)
+    Coupen_offer = models.IntegerField(null = True)
     
     def __str__(self):
         return str(self.Coupencode)
@@ -28,7 +28,7 @@ class Coupen(models.Model):
 class Category(models.Model):
    
     category_name   =  models.CharField(max_length=200)
-    Category_offer  =  models.IntegerField(max_length=200, null = True)
+    Category_offer  =  models.IntegerField( null = True)
 
     def __str__(self):
         return self.category_name
@@ -48,11 +48,11 @@ class Category(models.Model):
 class Product(models.Model):
     product_name        = models.CharField(max_length=200, null = True)
     product_description = models.TextField(max_length=10000, null = True)
-    product_prize       = models.IntegerField(max_length=200, null = True)
-    stock               = models.IntegerField(max_length=200,null= True)
+    product_prize       = models.IntegerField(null = True)
+    stock               = models.IntegerField(null= True)
     is_available        = models.BooleanField(default=True)
     category_type       = models.ForeignKey(Category,on_delete=models.CASCADE,null = True)
-    product_offer       = models.IntegerField(max_length=200,null= True,default=0)
+    product_offer       = models.IntegerField(null= True,default=0)
     product_image       = models.ImageField(null= True,blank = True,upload_to ='images/')
     product_image1      = models.ImageField(null= True,blank = True,upload_to ='images/')
     product_image2      = models.ImageField(null= True,blank = True,upload_to ='images/')
@@ -120,7 +120,7 @@ class CustomerAdress(models.Model):
     city            = models.CharField(max_length=200, null = True)
     state           = models.CharField(max_length=200, null = True)
     country         = models.CharField(max_length=200, null = True)
-    post_code       = models.IntegerField(max_length=200, null = True)
+    post_code       = models.IntegerField( null = True)
 
 
     def __str__(self):
