@@ -320,10 +320,7 @@ def checkout_view(request):
             return render(request,'customer/checkout.html',context)    
            
     except:
-        messages.error(request,'Please login for checkout ')
-        return redirect ('/signin')
-
-
+       pass
     if  request.session.get('name'): 
         sum = 0
         for i in Items:
@@ -332,10 +329,14 @@ def checkout_view(request):
         grandtotal = tax+sum+40
         grandtotalmul = grandtotal
     else:
-        return redirect('cart/')
-        grandtotalmul = grandtotal
+         messages.error(request,'Please login for checkout ')
+         return redirect ('/signin')
+    grandtotalmul = grandtotal 
     contex = {'Items':Items,'choices':choices,'form':form,'tax':tax,'grandtotal':grandtotal,'cartcount': cartcount,'sum':sum,'grandtotalmul':grandtotalmul}  
     return render(request,'customer/checkout.html',contex)
+
+
+
 
 
 
