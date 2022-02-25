@@ -93,9 +93,9 @@
 
                                     <div class="o-summary__section u-s-m-b-30 col-lg">
                                         <div class="o-summary__box">
-                                          <a style="background-color: red;" type="button"  onclick="coupen()" class="btn text-light btn-sm w-25 ">
+                                          <a style="background-color: red;" type="button"  onclick="coupen()" class="btn text-light btn-sm col-lg-4 ">
                                             Have a Coupen ? 
-                                        </a>  <p style="color: red;">  {% include "adminpart/alert.html" %}</p> <p style="color: green;"> {% if 'coupen_offer' %}You got {{coupen_offer}}% discount{% endif %} </p>
+                                        </a>  <p style="color: red;">  {% include "adminpart/alert.html" %}</p> <p style="color: green;"> {% if coupen_offer  %}You got {{coupen_offer}}% discount{% endif %} </p>
                                         <div style="display: none;" id="coupenDiv">
   
                                             
