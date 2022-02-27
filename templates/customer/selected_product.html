@@ -40,10 +40,10 @@
           <div class="product_slider_img img-zoom-container">
             
             
-              {% comment %} <div class="previewPane" data-thumb="{{i.product_image.url}}">
-                <img id="myimage" src="{{i.product_image.url}}" />
+            <div class="imgline" id="vertical">
+              <div class="previewPane" data-thumb="{{i.product_image.url}}">
+                <img class="imagekey" src="{{i.product_image.url}}" />
               </div>
-               <div id="myresult" class="img-zoom-result"></div>
               <div data-thumb="{{i.product_image.url}}">
                 <img  src="{{i.product_image.url}}" />
               </div>
@@ -56,13 +56,14 @@
               </div>
               <img id="zoom_04" src="{{i.product_image.url}}"
               data-zoom-image="{{i.product_image.url}}"/>
-              {% endcomment %}
-                  <div class="previewPane"></div><div id="zoomer"></div>
+              
+            </div>
+                  {% comment %} <div class="previewPane"></div><div id="zoomer"></div>
                       <div class="imgline">
                         <img class="imgkey" src="{{i.product_image.url}}">
                         <img class="imgkey" src="{{i.product_image1.url}}">
                         <img class="imgkey" src="{{i.product_image2.url}}">
-                    </div>
+                    </div> {% endcomment %}
    
     
       
