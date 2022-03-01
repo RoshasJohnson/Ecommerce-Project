@@ -137,8 +137,8 @@
                                      return response.json()
                                       })
                                      .then((data)=>{
-                                        console.log('data:',data)
-                                     alert('hehehheeheheh')
+                                     
+                                 
                                      })
                   
                                         }
@@ -494,18 +494,12 @@
                                 let payment = document.forms["myForm"]["payment"].value; 
                                 let product = document.getElementById('product')
                                 var productId = product.getAttribute('data-product');
-                                console.log(productId,"produfffctid")
+                            
                                 let total= document.getElementById('prize')
                                 let num =total.getAttribute('data-prize');
                                 let get_total = parseInt(num)
-                                console.log(get_total)
-                                console.log( typeof(get_total))
-                                
+                              
                              
-                               
-                                console.log('user in logged in ,sending data....')
-                                console.log(payment,address)
-                            
                                 var url = '/cart_items/'
                                 fetch(url,{
                                 method:'POST',
@@ -520,8 +514,7 @@
                                     return response.json()
                                   })
                                   .then((data)=>{
-                                    console.log('data:',data)
-                                    alert(data.limit)
+                                
 
                                     Swal.fire({
                                         title: 'Order placed successfully ',

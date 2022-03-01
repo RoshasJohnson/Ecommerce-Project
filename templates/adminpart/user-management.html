@@ -35,12 +35,14 @@
         <td class="" style="color:white;">{{i.phone_number}}</td>
         <td class="" style="color:white;"><a class="btn btn"role="button">
           {% if i.is_active %}
-          <button type="button" id = "status" data-status= "{{i.id}}" onclick="check()" class="btn btn-outline-success">Block</button>
+   <a type="button" id = "status"href ="{% url 'userstatus' i.id %}" data-status= "{{i.id}}" onclick="check()" class="btn btn-outline-success">Block</button>
+           
           {% else %}
-          <a  id = "status"  data-status= "{{i.id}}" onclick="setStatus()"  class="btn btn-outline-danger" > Unblock</a>
+          <a  type = "button" id = "status" href ="{% url 'userstatus' i.id %}" data-status= "{{i.id}}"   class="btn btn-outline-danger" > Unblock</a>
+          <input data-status= "{{i.id}}" type="hidden" id="Url" data-url="" /></td>
           {% endif %}
         </a>
-        <input data-status= "{{i.id}}" type="hidden" id="Url" data-url="{% url 'userstatus' i.id %}" />
+        
       </tr>
       {% endif %}
   {% endfor %}
@@ -93,7 +95,6 @@
  var productId = product.getAttribute('data-status');
  let url = document.getElementById('Url')
  var locationUrl = url.getAttribute('data-url');
-
 
  Swal.fire({
   title: 'Are you sure?',
