@@ -30,17 +30,13 @@
    <!--::header part start::-->
    <!--================Single Product Area =================-->
   {% for i in selectedProduct %}
-
-  
-
   <div class="product_image_area section_padding">
     <div class="container">
       <div class="row s_product_inner justify-content-between">
         <div class="col-lg-7 col-xl-7">
           <div class="product_slider_img img-zoom-container">
-            
-            
-            <div class="imgline" id="vertical">
+       
+            {% comment %} 
               <div class="previewPane" data-thumb="{{i.product_image.url}}">
                 <img class="imagekey" src="{{i.product_image.url}}" />
               </div>
@@ -57,13 +53,13 @@
               <img id="zoom_04" src="{{i.product_image.url}}"
               data-zoom-image="{{i.product_image.url}}"/>
               
-            </div>
-                  {% comment %} <div class="previewPane"></div><div id="zoomer"></div>
+            </div> {% endcomment %}
+               <div class="previewPane"></div><div id="zoomer"></div>
                       <div class="imgline">
                         <img class="imgkey" src="{{i.product_image.url}}">
                         <img class="imgkey" src="{{i.product_image1.url}}">
                         <img class="imgkey" src="{{i.product_image2.url}}">
-                    </div> {% endcomment %}
+                      </div>
    
     
       
