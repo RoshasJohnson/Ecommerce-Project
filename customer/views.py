@@ -1077,10 +1077,9 @@ def otp_login_verification(request):
             if check(otp,number):
                 print(num)
                 user  = Usercreation.objects.get(phone_number = num)
-                print(user)
-                for i in user:
-                        username = i.username
-                        print(i.username,'balhhhhhhhhhhhhhhhhhhhhh')
+               
+                username  = user.username
+                print(user,'//rrrrrrrrrrroooooooooooooooooooooooooooosa')
                 request.session['name'] = username
                 return redirect('/manage_account')
 
