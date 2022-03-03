@@ -10,7 +10,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 import re
 from django.views.decorators.csrf import csrf_protect
-from gevent import config
+
 import customer
 from .models import AbstractUser, Product
 from .models import *
