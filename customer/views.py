@@ -2,10 +2,9 @@ from ast import Return
 from audioop import add
 from ctypes import addressof
 from curses.ascii import NUL
-from genericpath import exists
-from itertools import product
-from multiprocessing import context
-from defer import return_value
+
+
+
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 import re
@@ -40,7 +39,7 @@ def SendOTP(num):
     global number 
     number = num
   
-    print(number,'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+
 
     account_sid = os.environ['TWILIO_ACCOUNT_SID'] =config('TWILIO_ACCOUNT_SID')
 
@@ -90,7 +89,7 @@ def otp_verication(request):
         if request.method  == 'POST':
             otp = request.POST ['number']
             if check(otp,number):
-                return redirect('/signin')
+                return redirect('/manage_account')
             else:
                 messages.error(request,'Invalid OTP ') 
     else:
@@ -121,6 +120,7 @@ def usersignupView (request):
 # home page view function
 def homepage_view(request):
     Designpage= Design.objects.all()
+
     for i in Designpage:
         print(i.Banner_image1.url)
     try:    
@@ -136,6 +136,7 @@ def homepage_view(request):
             'choices':choices,
             'cartcount':cartcount,'cartitems':cartitems,'user':user}
             return render(request,'customer/index.html',contex)
+           
 
         else:
             session_key = request.session.session_key
@@ -305,7 +306,7 @@ def checkout_view(request):
                     grandtotal       = tax+sum+40
                     grandtotal       = grandtotal - (grandtotal*coupen_offer)/100
                     Usercreation.objects.filter(username = username ).update(coupen = coupen)
-                    grandtotalmul = grandtotal *100
+                    grandtotalmul = grandtotal * 100
 
                     
                     
@@ -630,10 +631,13 @@ def cart_item_buy_View(request):
          address        = CustomerAdress.objects.get(id = address_id)
          limit = 0
          tax = 0
+         count = 1
          for i in product:
              tax       =  i.product.product_prize/18   
              get_total =    (i.product.product_prize+tax +40) *i.quantity 
              quantity  = i.quantity 
+             count += 1
+             print(count)
              print(get_total,"quantity")
              Order( Customer = address, order_product  =i.product,
              user_name = username,payment_method = payment_method,
@@ -935,7 +939,7 @@ def remove_cart_item_View(request,id):
 def invoice_view(request,id):     
     if request.session.get('name'):
         product = Product.objects.get(id = id)
-        order= Order.objects.filter(order_product = product ).order_by('-id')
+        order= Order.objects.filter(order_product = product ).order_by('-id')[:1]
  
         context = {'order':order}
         return render(request,'customer/invoice.html',context)
@@ -943,9 +947,9 @@ def invoice_view(request,id):
 
 
 
-def invoice_Cart_view(request):     
+def invoice_Cart_view(request,id):     
     if request.session.get('name'):
-        order   = Order.objects.all()
+        order   = Order.objects.all().order_by('-id')[:id]
         context = {'order':order}
         return render(request,'customer/invoice.html',context)
 
@@ -953,7 +957,7 @@ def invoice_Cart_view(request):
 #=========================================================================================================================================
 
 
-def razorpay_checkout(request):
+def razorpay_checkout(request ):
     if request.session.get("name"):
         if request.method == 'GET':
             user        = request.session.get('name')
@@ -963,12 +967,14 @@ def razorpay_checkout(request):
             product     = Product.objects.get(id = product_id)
             get_total   =  request.GET['grandtotal']
             address     =  request.GET['address']
+            cart_number =  request.GET['cart_number']
+            cart        = int(cart_number)
             address     = CustomerAdress.objects.get(id = address)
-            print(user,payment,product_id ,username,address,get_total,'b;ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+           
             Order.objects.create( Customer = address,order_product =product,
          user_name = username,payment_method = payment ,total_prize =get_total)
-            print('successsssssssssssssssssssssssssssssssssssssssss')
-            order= Order.objects.all().order_by('-id')
+         
+            order= Order.objects.all().order_by('-id')[:1]
             context = {'order':order}
         return render(request,'customer/invoice.html',context)
             
@@ -988,6 +994,8 @@ def razorpay_cart_checkout(request):
             get_total   =  request.GET['grandtotal']
             address     =  request.GET['address']
             address     = CustomerAdress.objects.get(id = address)
+            cart_number =  request.GET['cart_number']
+            cart = int(cart_number)
             for i in product:
                 tax       =  i.product.product_prize/18   
                 get_total =    (i.product.product_prize+tax +40) *i.quantity 
@@ -998,7 +1006,7 @@ def razorpay_cart_checkout(request):
                 quantity  = i.quantity ,total_prize =get_total).save()
                 product.delete()
             print('succuss')
-            order= Order.objects.all().order_by('-id')
+            order= Order.objects.all().order_by('-id')[:cart]
             context = {'order':order}
             return render(request,'customer/invoice.html',context)
                   

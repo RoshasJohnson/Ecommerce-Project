@@ -22,7 +22,7 @@ import xlwt
 
 
 
-
+@never_cache
 def adminpart(request):
     form = Customer()
     form = Customer(request.POST or None, request.FILES or None)
@@ -34,14 +34,17 @@ def adminpart(request):
             if admincheck.is_superuser:
                         request.session['name'] = request.POST['username']
                         total_customer  = Usercreation.objects.all().count()
+                        total_customer  =  total_customer -1 
                         total_product   = Product.objects.all().count()
                         total_category  = Category.objects.all().count()
                         total_order     = Order.objects.all().count()
-                        cancel_order    = Order.objects.filter(status ='Canceled').count()   
+                        cancel_order    = Order.objects.filter(status ='Canceled').count()
+                        active_user     = Usercreation.objects.get(is_active  = 1).count()
+                        print(active_user)   
  
                      
 
-                        print(cancel_order)
+                       
                         contex          = {'total_product'  : total_product,
                                         'total_customer'    : total_customer,
                                         'total_category'    : total_category,
@@ -50,7 +53,7 @@ def adminpart(request):
                                     
                                         }
 
-                        return render(request,'adminpart/dashbord.html',contex)
+                        return redirect('adminpanel')
         
         else:
             errorshowing = 'Incorrect user name and password'
@@ -61,7 +64,7 @@ def adminpart(request):
         form = Customer()
         return render(request,'adminpart/admin_login.html',{'form':form })
 # ========================================================================================================================================= 
-
+@never_cache
 def admin_dashboard(request):
     if request.session.get('name'):
         total_sum =0
@@ -69,22 +72,29 @@ def admin_dashboard(request):
         total_product   = Product.objects.all().count()
         total_category  = Category.objects.all().count()
         total_order     = Order.objects.all().count()
-        total_earnings  = Order.objects.all()   
+        total_earnings  = Order.objects.all()
+        total_customer  =  total_customer -1    
         cancel_order     = Order.objects.filter(status ='Canceled').count()  
-        delivered_order = Order.objects.filter(status ='Delivered').count()  
+        delivered_order = Order.objects.filter(status ='Delivered').count()
+        active_user     = Usercreation.objects.filter(is_active  = 1).count()
+        inactiave_user     = Usercreation.objects.filter(is_active  =1 ).count()
+        active_user = active_user-1
+        print(inactiave_user)  
         for i  in total_earnings:
             total_sum +=i.total_prize
 
-        print(total_sum)    
+     
         contex        = {'total_product'  : total_product,
                         'total_customer'  : total_customer,
                         'total_category'  : total_category,
                         'total_order'     : total_order,
                         'total_sum'       :total_sum, 
                         'cancel_order'    :cancel_order ,
-                         'delivered_order':delivered_order    
-                       
-                        }
+                         'delivered_order':delivered_order  ,
+                         'active_user'     :active_user,
+                         'inactiave_user':inactiave_user
+
+                                               }
         return render(request,'adminpart/dashbord.html',contex)
     else:
         return redirect('/adminpanel/login/')

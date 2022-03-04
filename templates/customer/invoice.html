@@ -4,14 +4,16 @@
 {% load static %}
 
 {% block content %}
+
     <div  class="container mt-5 mb-5">
         <div  class="row d-flex justify-content-center">
             <div  class="col-md-8">
                 <div class="card"> 
+                    <button onclick="window.print()" class="btn btn-primary btn-sm text-light"> Print</button>
                     {% for i  in order %}
                     
                    
-                    <div style="background-color: rgb(178, 198, 198);"  class="invoice p-5">
+                    <div     class="invoice p-5">
 
                         <div class="payment border-top mt-3 mb-3 border-bottom table-responsive">
                             <table class="table table-borderless">
@@ -54,7 +56,7 @@
                                             </div>
                                         </td>
                                         <td width="20%">
-                                            <div class="text-right"> <span class="font-weight-bold">{{i.product_prize}}</span> </div>
+                                            <div class="text-right"> <span class="font-weight-bold"> {{i.product_prize}}</span> </div>
                                         </td>
                                     </tr>
 
@@ -90,7 +92,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="text-right"> <span class="font-weight-bold">{{i.order_product.get_Total_prize}}</span>
+                                                <div class="text-right"> <span class="font-weight-bold"> INR :{{i.order_product.get_Total_prize}}</span>
                                                 </div>
                                             </td>
                                         </tr>
@@ -100,9 +102,9 @@
                         </div>
 
                     </div>
-
+                    {% endfor %}
                 </div>
-                {% endfor %}
+
             </div>
         </div>
     </div>

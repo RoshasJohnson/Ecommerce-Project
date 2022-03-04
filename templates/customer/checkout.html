@@ -251,6 +251,7 @@
                     </div>
                 </div>
             </div>
+            <input value="{{cartcount}}" type="hidden" name="cart_number" id="cart_number">
             <!--====== End - Section Content ======-->
         </form>
         <div id="razorpaydiv"  style="display:none;" class="answer_list" >
@@ -262,6 +263,7 @@
                 <input value="{{i.id}}" type="hidden" name="address" id="address">
                 {% endfor %}
                 <input value="{{grandtotal}}" type="hidden" name="grandtotal" id="address">
+                <input value="{{cartcount}}" type="hidden" name="cart_number" id="cart_number">
               <script
               
                   src="https://checkout.razorpay.com/v1/checkout.js"
@@ -375,7 +377,7 @@
                                 let payment = document.forms["myForm"]["payment"].value; 
                                 let product = document.getElementById('product')
                                 var productId = product.getAttribute('data-product');
-                            
+                                var cart_number =  document.getElementById('cart_number').value
                                 let total= document.getElementById('prize')
                                 let num =total.getAttribute('data-prize');
                                 let get_total = parseInt(num)
@@ -409,7 +411,7 @@
                                         timer: 1500000,
                                       })
                                       setTimeout(() => {
-                                        window.location.href = "/manage_account"
+                                        window.location.href = "/cart_order_placed/" + cart_number
                                      }, 1000);
                                       
                                     
@@ -498,7 +500,7 @@
                                 let total= document.getElementById('prize')
                                 let num =total.getAttribute('data-prize');
                                 let get_total = parseInt(num)
-                              
+                                var cart_number =  document.getElementById('cart_number').value
                              
                                 var url = '/cart_items/'
                                 fetch(url,{
@@ -527,10 +529,10 @@
                                         timer: 1500000,
                                       })
                                       setTimeout(() => {
-                                        window.location.href = "/order_place/"
+                                       
                                      }, 1000);
                                       
-                                    
+                                     window.location.href = "/cart_order_placed/" +cart_number
                                   })  
 
                     }
