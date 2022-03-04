@@ -29,7 +29,7 @@ import os
 from decouple import config 
 
 
-
+# testing git pull
 # ========================================================================================================================================= 
 
 
@@ -139,6 +139,7 @@ def homepage_view(request):
            
 
         else:
+            user = ''
             session_key = request.session.session_key
             cartcount   = OrderItem.objects.filter(guest_user = session_key).count()
             Designpage   = Design.objects.all()
@@ -148,9 +149,9 @@ def homepage_view(request):
             contex       = {'everyproduct':everyproduct,
             'Designpage':Designpage,
             'choices':choices,
-            'order':order,'cartcount':cartcount}
+            'order':order,'cartcount':cartcount,'user':user}
             return render(request,'customer/index.html',contex)
-    except:
+    except: 
         return redirect('/signin')
 
 # ========================================================================================================================================= 
@@ -175,13 +176,14 @@ def selected_Product_view(request,id):
         'category_offer':category_offer,'every_product':every_product }
         return render(request,'customer/selected_product.html',contex)
     else:
+        user = ''
         product_offer   = 0
         category_offer  = 0
         session_key = request.session.session_key
         cartcount   = OrderItem.objects.filter(guest_user = session_key).count()
         selectedProduct = Product.objects.filter(id= id) 
         choices = Category.objects.all()
-        contex   = {'selectedProduct':selectedProduct,'choices':choices,'product_offer':product_offer,'category_offer':category_offer,
+        contex   = {'selectedProduct':selectedProduct,'choices':choices,'product_offer':product_offer,'category_offer':category_offer,'user':user,
         'cartcount':cartcount,'every_product':every_product}
         return render(request,'customer/selected_product.html',contex)
 
@@ -260,6 +262,7 @@ def cart_View(request):
             qty  = i.quantity     
       
     else:
+        user = ''
         sum  = 0
         qty  = 0
         session = request.session.session_key   
@@ -268,7 +271,7 @@ def cart_View(request):
             sum += i.quantity  * i.product.get_coupen_offer_prize 
             qty = i.quantity 
         cartcount =OrderItem.objects.filter(guest_user =session ).count()
-    contex = {'items':items, 'choices':choices,'cartcount':cartcount ,'sum':sum,'qty':qty}
+    contex = {'items':items, 'choices':choices,'cartcount':cartcount ,'sum':sum,'qty':qty,'user':user}
     return render (request,'customer/cart.html', contex)
 
  
@@ -351,11 +354,15 @@ def updateItem(request):
         data       = json.loads(request.body)    
         productId  = data['productId']
         action     = data['action']
-    
         customer    = request.session.get('name')
         user        = Usercreation.objects.get(username = customer)
         product     = Product.objects.get(id = productId  ) 
-        OrderItem.objects.create(product = product ,user = user )  
+        if OrderItem.objects.filter(product = product).exists():
+                 product_name =  OrderItem.objects.get(product = product)
+                 product_name.quantity += 1
+                 product_name.save()
+        else:
+            OrderItem.objects.create(product = product ,user = user )  
         return JsonResponse('item was added', safe = False)    
     else:
         data       = json.loads(request.body) 
@@ -363,14 +370,25 @@ def updateItem(request):
         if request.session.session_key: 
             session_key = request.session.session_key
             product     = Product.objects.get(id = productId  ) 
-            OrderItem.objects.create(guest_user = session_key,product = product)
-            print('helooooo')
+            if OrderItem.objects.filter(product = product).exists():
+               
+                product_name =  OrderItem.objects.get(product = product)
+                product_name.quantity += 1
+                product_name.save()
+            else:    
+                OrderItem.objects.create(guest_user = session_key,product = product)
+                print('helooooo')
             return JsonResponse('item was added', safe = False)   
         else:
             request.session.create()
             session_key = request.session.session_key
             product     = Product.objects.get(id = productId  ) 
-            OrderItem.objects.create(guest_user = session_key,product = product)    
+            if OrderItem.objects.filter(product = product).exists():
+                product_name =  OrderItem.objects.get(product = product)
+                product_name.quantity += 1
+                product_name.save()
+            else:    
+                OrderItem.objects.create(guest_user = session_key,product = product)    
             return JsonResponse('item was added', safe = False)   
         
 # ========================================================================================================================================= 
@@ -566,12 +584,13 @@ def productpage_View(request,id):
         return render (request,'customer/products.html',context) 
        
     else:
+        user = ''
         session_key = request.session.session_key
         cartcount   = OrderItem.objects.filter(guest_user = session_key).count()      
         product    = Category.objects.get(id = id)
         products   = Product.objects.filter(category_type = product)
         choices    = Category.objects.all()
-        context    = {'products':products,'choices':choices,'cartcount':cartcount}
+        context    = {'products':products,'choices':choices,'cartcount':cartcount,'user':user}
         return render (request,'customer/products.html',context) 
 
 
@@ -1048,9 +1067,8 @@ def login_with_otp(request):
 
 def sending_otp_view(request):
         if request.method == "POST":
-            print('hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
+           
             try:
-                print('helllllllllllllllllllllllll0')
                 number = request.POST['number']
                
                 number = int(number)
@@ -1061,7 +1079,6 @@ def sending_otp_view(request):
                     number = str(number)
                     num = '+91'+number
                     if SendOTP(num):
-                        print('blhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
                         return  render(request,'customer/login_otp.html',{'number':number})
                        
                 else:
@@ -1079,6 +1096,7 @@ def otp_login_verification(request):
             otp = request.POST['otp']
             num = request.POST['number']
             number = str(num)
+            print(num)
             number = '+91'+num
             print('was it ')
             print(number,'////////////////////////////')
@@ -1108,7 +1126,6 @@ def timercheck(request):
     user  = Usercreation.objects.filter(phone_number = number)
     for i in user:
         username = i.username
-        print(i.username,'balhhhhhhhhhhhhhhhhhhhhh')
     request.session['name'] = username
     print(username)
     return render (request,'customer/otp.html')        

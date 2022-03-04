@@ -20,7 +20,7 @@ import csv
 import xlwt
 # Create your views here.
 
-
+#cheking for git pull
 
 @never_cache
 def adminpart(request):
@@ -39,7 +39,7 @@ def adminpart(request):
                         total_category  = Category.objects.all().count()
                         total_order     = Order.objects.all().count()
                         cancel_order    = Order.objects.filter(status ='Canceled').count()
-                        active_user     = Usercreation.objects.get(is_active  = 1).count()
+                        active_user     = Usercreation.objects.filter(is_active  = 1).count()
                         print(active_user)   
  
                      
