@@ -17,7 +17,7 @@ class Usercreation(AbstractUser):
 # --------------------------------   
 class Coupen(models.Model):
     
-    Coupencode   = models.IntegerField( null = True,blank = True)
+    Coupencode   = models.CharField( max_length=10, null = True,blank = True)
     Coupen_offer = models.IntegerField(null = True)
     
     def __str__(self):
